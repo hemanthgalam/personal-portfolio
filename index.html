@@ -7,27 +7,34 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+              mono: ['"Fira Code"', 'monospace'],
             },
             colors: {
               primary: {
-                50: '#f0f9ff',
-                100: '#e0f2fe',
-                500: '#0ea5e9',
-                600: '#0284c7',
-                700: '#0369a1',
-                900: '#0c4a6e',
+                50: '#f0fdf4',
+                100: '#dcfce7',
+                500: '#10b981', // Emerald as healthy status color
+                600: '#059669',
+                700: '#047857',
+                900: '#064e3b',
               },
-              slate: {
-                850: '#1e293b', // Custom dark slate
-                950: '#020617', // Darker background
+              cyber: {
+                bg: '#05060b',
+                card: '#0c0e17',
+                border: '#1e2235',
+                cyan: '#06b6d4',
+                amber: '#f59e0b',
+                purple: '#8b5cf6',
+                emerald: '#10b981',
+                red: '#ef4444',
               }
             }
           }
@@ -39,7 +46,7 @@
         scroll-behavior: smooth;
       }
       body {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Plus Jakarta Sans', sans-serif;
       }
       /* Custom Scrollbar for Modal content */
       .custom-scrollbar::-webkit-scrollbar {
@@ -66,7 +73,25 @@
     "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0"
   }
 }
-</script>
+    <!-- Google tag (gtag.js) -->
+    <script>
+      const gaId = "%VITE_GA_MEASUREMENT_ID%" || "";
+      if (gaId && gaId !== "%" + "VITE_GA_MEASUREMENT_ID" + "%" && gaId.startsWith("G-")) {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = "https://www.googletagmanager.com/gtag/js?id=" + gaId;
+        document.head.appendChild(script);
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function() { dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', gaId);
+      } else {
+        window.gtag = function(command, action, params) { 
+          console.log(`[GA4 TELEMETRY]: Command = ${command}, Action = ${action}, Parameters =`, params); 
+        };
+      }
+    </script>
 <link rel="stylesheet" href="/index.css">
 </head>
   <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">

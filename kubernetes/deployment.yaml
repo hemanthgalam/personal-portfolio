@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: personal-portfolio
+  namespace: default
+  labels:
+    app: personal-portfolio
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: personal-portfolio
+  template:
+    metadata:
+      labels:
+        app: personal-portfolio
+    spec:
+      containers:
+      - name: personal-portfolio
+        # Replace this with your actual AWS ECR image URI, for example:
+        # 123456789012.dkr.ecr.us-east-1.amazonaws.com/personal-portfolio:latest
+        image: personal-portfolio:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: personal-portfolio-service
+  namespace: default
+  labels:
+    app: personal-portfolio
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: personal-portfolio

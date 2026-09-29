@@ -10,13 +10,14 @@ export interface WorkExperience {
   slides?: string[];
   presentationUrl?: string; // Link to the full PDF/PPT download
   videoUrl?: string; // Link to video presentation
+  referenceEmail?: string;
 }
 
 export interface Education {
   degree: string;
   institution: string;
   period: string;
-  // ... existing education fields
+  details?: string[];
 }
 
 export interface Project {
@@ -51,4 +52,12 @@ export interface PersonalInfo {
   meetingUrl?: string;
   languages: string[];
   primarySkills: string[];
+}
+
+export interface Reference {
+  name: string;
+  role: string;
+  company: string;
+  relation: string;
+  contact: string;
 }

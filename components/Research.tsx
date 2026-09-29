@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
-import { WORK_HISTORY, ROBOTICS_WORK_HISTORY } from '../constants';
+import { RESEARCH_HISTORY, ROBOTICS_RESEARCH_HISTORY } from '../constants';
 import { WorkExperience } from '../types';
-import { trackEvent } from '../utils/telemetry';
-import { Calendar, MapPin, Briefcase, ArrowRight, ExternalLink, FileText, Activity, CheckCircle2, Server, Mail } from 'lucide-react';
+import { Calendar, MapPin, Award, ArrowRight, ExternalLink, FileText, Activity, CheckCircle2, Cpu, Mail } from 'lucide-react';
 import Modal from './Modal';
 import Slideshow from './Slideshow';
 
-interface ExperienceProps {
+interface ResearchProps {
   profile?: 'backend' | 'robotics';
 }
 
-const Experience: React.FC<ExperienceProps> = ({ profile = 'backend' }) => {
-  const [selectedJob, setSelectedJob] = useState<WorkExperience | null>(null);
+const Research: React.FC<ResearchProps> = ({ profile = 'backend' }) => {
+  const [selectedThesis, setSelectedThesis] = useState<WorkExperience | null>(null);
 
-  const history = profile === 'robotics' ? ROBOTICS_WORK_HISTORY : WORK_HISTORY;
+  const history = profile === 'robotics' ? ROBOTICS_RESEARCH_HISTORY : RESEARCH_HISTORY;
 
   const getIframeSrc = (url: string) => {
     if (url.includes('drive.google.com')) {
@@ -22,94 +21,76 @@ const Experience: React.FC<ExperienceProps> = ({ profile = 'backend' }) => {
     return `${url}#toolbar=0&view=Fit`;
   };
 
-  const hasMedia = (job: WorkExperience) => {
-    return !!(job.videoUrl || job.presentationUrl || (job.slides && job.slides.length > 0));
+  const hasMedia = (thesis: WorkExperience) => {
+    return !!(thesis.videoUrl || thesis.presentationUrl || (thesis.slides && thesis.slides.length > 0));
   };
 
   return (
-    <section className="py-24 bg-[#0b0f19] relative border-t border-slate-800/60 neural-grid" id="experience">
+    <section className="py-24 bg-[#0b0f19] relative border-t border-slate-800/60 neural-grid" id="research">
       
-      {/* Route Connector */}
-      <div className="absolute left-1/2 top-0 -translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-sky-500/50 via-slate-800 to-indigo-500/50 pointer-events-none hidden lg:block">
-        <div className="packet-purple"></div>
+      {/* Route line indicator */}
+      <div className="absolute left-1/2 top-0 -translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-indigo-500/50 via-slate-800 to-sky-500/50 pointer-events-none hidden lg:block">
+        <div className="packet-cyan"></div>
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
         
         {/* Section Header */}
         <div className="mb-16 text-center lg:text-left">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">Professional Experience</h2>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">Research & Publications</h2>
           <p className="text-slate-400 text-sm font-mono max-w-xl">
             {profile === 'robotics' 
-              ? 'Applied Robotics Research & Edge AI Engineering Positions' 
-              : 'Distributed Systems & Microservices Engineering Timeline'
+              ? 'Academic Master & Research Theses in Robotics, ML & Computer Vision' 
+              : 'Academic Master & Research Theses at the University of Stuttgart'
             }
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {history.map((job, idx) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {history.map((thesis, idx) => (
             <div 
               key={idx} 
-              className="neural-card rounded-2xl p-6 flex flex-col justify-between group"
+              className="neural-card rounded-2xl p-7 flex flex-col justify-between group"
             >
               <div>
                 {/* Header info */}
                 <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-3 text-xs">
                   <div className="flex items-center gap-2">
-                    <Briefcase size={15} className="text-sky-400" />
-                    <span className="text-white font-semibold text-sm">{job.company}</span>
+                    <Cpu size={16} className="text-sky-400" />
+                    <span className="text-white font-bold text-sm">{thesis.company}</span>
                   </div>
-                  <span className="text-slate-400 font-mono">{job.location}</span>
+                  <span className="text-slate-400 font-mono">{thesis.location}</span>
                 </div>
                 
-                <h3 className="text-lg font-bold text-white mb-1 group-hover:text-sky-400 transition-colors">
-                  {job.role}
+                <h3 className="text-xl font-bold text-white mb-1 group-hover:text-sky-400 transition-colors">
+                  {thesis.role}
                 </h3>
-                <p className="text-sky-400 font-semibold font-mono text-xs mb-4">{job.period}</p>
+                <p className="text-sky-400 font-semibold font-mono text-xs mb-4">{thesis.period}</p>
                 
-                <p className="text-slate-300 text-sm leading-relaxed mb-4">
-                  {job.summary}
+                <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                  {thesis.summary}
                 </p>
 
-                {job.presentationUrl && (
-                  <div className="mb-4">
-                    <a 
-                      href={job.presentationUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 border border-sky-500/30 rounded-lg text-xs font-mono text-sky-400 hover:bg-sky-500/20 transition-colors"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <FileText size={13} />
-                      <span>Reference / Experience PDF</span>
-                    </a>
-                  </div>
-                )}
-
-                {job.referenceEmail && (
+                {thesis.referenceEmail && (
                   <div className="mb-6 pt-3 border-t border-slate-800/80 flex items-center gap-2 text-xs">
                     <Mail size={14} className="text-sky-400 shrink-0" />
-                    <span className="text-slate-400">Ref:</span>
+                    <span className="text-slate-400">Advisor Ref:</span>
                     <a 
-                      href={`mailto:${job.referenceEmail}`} 
+                      href={`mailto:${thesis.referenceEmail}`} 
                       className="text-sky-400 hover:underline font-mono truncate font-medium"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      {job.referenceEmail}
+                      {thesis.referenceEmail}
                     </a>
                   </div>
                 )}
               </div>
 
               <button 
-                onClick={() => {
-                  setSelectedJob(job);
-                  trackEvent('view_experience_details', { company: job.company, role: job.role });
-                }}
+                onClick={() => setSelectedThesis(thesis)}
                 className="w-full mt-auto py-3 px-4 bg-slate-900 border border-slate-700 hover:border-sky-500/50 hover:bg-sky-500/10 text-slate-200 font-medium text-xs rounded-xl flex items-center justify-center gap-2 transition-all"
               >
-                Inspect Details
+                View Thesis & Slides
                 <ArrowRight size={15} className="text-sky-400 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
@@ -118,48 +99,47 @@ const Experience: React.FC<ExperienceProps> = ({ profile = 'backend' }) => {
       </div>
 
       <Modal 
-        isOpen={!!selectedJob} 
-        onClose={() => setSelectedJob(null)} 
-        title={selectedJob?.role || ''}
-        subtitle={selectedJob ? `${selectedJob.company} // Engineering Log` : undefined}
+        isOpen={!!selectedThesis} 
+        onClose={() => setSelectedThesis(null)} 
+        title={selectedThesis?.role || ''}
+        subtitle={selectedThesis ? `${selectedThesis.company} // Detailed Research Logs` : undefined}
       >
-        {selectedJob && (
+        {selectedThesis && (
           <div className="text-sm space-y-6">
             
             {/* Upper Stats */}
             <div className="flex flex-wrap gap-6 text-xs bg-slate-950/60 border border-slate-800 p-4 rounded-xl font-mono text-slate-300">
               <div className="flex items-center gap-2">
                 <Calendar size={14} className="text-sky-400" />
-                <span>TENURE: {selectedJob.period}</span>
+                <span>PERIOD: {selectedThesis.period}</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin size={14} className="text-sky-400" />
-                <span>LOCATION: {selectedJob.location}</span>
+                <span>ZONE: {selectedThesis.location}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Server size={14} className="text-emerald-400" />
-                <span>STATUS: Verified</span>
+                <Award size={14} className="text-emerald-400" />
+                <span>VERIFICATION: Academic Consensus</span>
               </div>
             </div>
 
             {/* Split layout: media on left, text logs on right */}
-            <div className={`grid grid-cols-1 ${hasMedia(selectedJob) ? 'lg:grid-cols-12' : ''} gap-8`}>
+            <div className={`grid grid-cols-1 ${hasMedia(selectedThesis) ? 'lg:grid-cols-12' : ''} gap-8`}>
               
               {/* Media column */}
-              {hasMedia(selectedJob) && (
+              {hasMedia(selectedThesis) && (
                 <div className="lg:col-span-7 space-y-4">
                   <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl h-full flex flex-col justify-between">
                     <div className="flex justify-between items-center mb-4 text-xs font-mono">
                       <h4 className="font-bold text-white uppercase tracking-wider flex items-center gap-2">
                         <Activity size={15} className="text-sky-400 animate-pulse" />
-                        Diagnostics & Presentation
+                        Thesis Presentation Slides
                       </h4>
-                      {selectedJob.presentationUrl && (
+                      {selectedThesis.presentationUrl && (
                         <a 
-                          href={selectedJob.presentationUrl}
+                          href={selectedThesis.presentationUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          onClick={() => trackEvent('click_experience_document', { company: selectedJob.company, document_url: selectedJob.presentationUrl })}
                           className="flex items-center gap-1.5 text-xs font-bold text-sky-400 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700 hover:border-sky-400 transition-all"
                         >
                           <ExternalLink size={12} />
@@ -169,22 +149,22 @@ const Experience: React.FC<ExperienceProps> = ({ profile = 'backend' }) => {
                     </div>
                     
                     <div className="flex-1 flex items-center justify-center">
-                      {selectedJob.videoUrl ? (
+                      {selectedThesis.videoUrl ? (
                         <div className="w-full h-[40vh] md:h-[48vh] bg-black rounded-lg overflow-hidden border border-slate-800 relative group">
                           <video 
                             controls 
                             className="w-full h-full object-contain"
                             preload="metadata"
                           >
-                            <source src={selectedJob.videoUrl} type="video/mp4" />
-                            <source src={selectedJob.videoUrl} type="video/webm" />
+                            <source src={selectedThesis.videoUrl} type="video/mp4" />
+                            <source src={selectedThesis.videoUrl} type="video/webm" />
                             Your browser does not support the video tag.
                           </video>
                         </div>
-                      ) : selectedJob.presentationUrl ? (
+                      ) : selectedThesis.presentationUrl ? (
                         <div className="w-full h-[40vh] md:h-[48vh] bg-slate-900 rounded-lg overflow-hidden border border-slate-800 relative">
                           <iframe 
-                            src={getIframeSrc(selectedJob.presentationUrl)}
+                            src={getIframeSrc(selectedThesis.presentationUrl)}
                             className="w-full h-full relative z-10"
                             title="Presentation PDF"
                             allow="autoplay"
@@ -192,9 +172,9 @@ const Experience: React.FC<ExperienceProps> = ({ profile = 'backend' }) => {
                           </iframe>
                           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-slate-400 z-0">
                             <FileText size={40} className="mb-3 opacity-40 text-sky-400" />
-                            <p className="mb-2 font-medium">Mounting document stream...</p>
+                            <p className="mb-2 font-medium">Mounting thesis slide stream...</p>
                             <a 
-                              href={selectedJob.presentationUrl} 
+                              href={selectedThesis.presentationUrl} 
                               target="_blank" 
                               rel="noreferrer" 
                               className="text-sky-400 font-semibold underline hover:text-white"
@@ -205,7 +185,7 @@ const Experience: React.FC<ExperienceProps> = ({ profile = 'backend' }) => {
                         </div>
                       ) : (
                         <div className="w-full">
-                          <Slideshow slides={selectedJob.slides!} />
+                          <Slideshow slides={selectedThesis.slides!} />
                         </div>
                       )}
                     </div>
@@ -214,21 +194,21 @@ const Experience: React.FC<ExperienceProps> = ({ profile = 'backend' }) => {
               )}
 
               {/* Text logs column */}
-              <div className={`${hasMedia(selectedJob) ? 'lg:col-span-5' : 'w-full'} space-y-6`}>
+              <div className={`${hasMedia(selectedThesis) ? 'lg:col-span-5' : 'w-full'} space-y-6`}>
                 
                 {/* Summary */}
                 <div className="bg-slate-950/60 border border-slate-800 p-5 rounded-xl">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2 border-l-2 border-sky-400 pl-2 font-mono">// Core Summary</h4>
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2 border-l-2 border-sky-400 pl-2 font-mono">// Research Brief</h4>
                   <p className="text-slate-200 text-sm leading-relaxed">
-                    {selectedJob.summary}
+                    {selectedThesis.summary}
                   </p>
                 </div>
 
                 {/* Contributions */}
                 <div className="bg-slate-950/60 border border-slate-800 p-5 rounded-xl">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3 border-l-2 border-sky-400 pl-2 font-mono">// Key Contributions</h4>
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3 border-l-2 border-sky-400 pl-2 font-mono">// Contributions Ledger</h4>
                   <ul className="space-y-3 text-sm">
-                    {selectedJob.description.map((desc, idx) => (
+                    {selectedThesis.description.map((desc, idx) => (
                       <li key={idx} className="flex gap-3 text-slate-200 leading-relaxed items-start">
                         <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
                         <span>{desc}</span>
@@ -239,9 +219,9 @@ const Experience: React.FC<ExperienceProps> = ({ profile = 'backend' }) => {
 
                 {/* Tech Stack */}
                 <div className="bg-slate-950/60 border border-slate-800 p-5 rounded-xl">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3 border-l-2 border-sky-400 pl-2 font-mono">// Tech Stack</h4>
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3 border-l-2 border-sky-400 pl-2 font-mono">// Technology Domains</h4>
                   <div className="flex flex-wrap gap-2">
-                    {selectedJob.skills.map((skill, idx) => (
+                    {selectedThesis.skills.map((skill, idx) => (
                       <span 
                         key={idx} 
                         className="px-3 py-1 bg-slate-900 border border-slate-700 text-slate-200 rounded-lg font-mono text-xs hover:border-sky-400/50 hover:text-white transition-colors"
@@ -252,18 +232,18 @@ const Experience: React.FC<ExperienceProps> = ({ profile = 'backend' }) => {
                   </div>
                 </div>
 
-                {/* Reference Contact */}
-                {selectedJob.referenceEmail && (
+                {/* Supervisor Reference */}
+                {selectedThesis.referenceEmail && (
                   <div className="bg-slate-950/60 border border-slate-800 p-5 rounded-xl">
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2 border-l-2 border-sky-400 pl-2 font-mono">// Engineering Reference Contact</h4>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2 border-l-2 border-sky-400 pl-2 font-mono">// Academic Supervisor Reference</h4>
                     <div className="flex items-center gap-2 text-sm text-slate-200">
                       <Mail size={16} className="text-sky-400 shrink-0" />
-                      <span>Contact:</span>
+                      <span>Official Contact:</span>
                       <a 
-                        href={`mailto:${selectedJob.referenceEmail}`} 
+                        href={`mailto:${selectedThesis.referenceEmail}`} 
                         className="text-sky-400 font-mono hover:underline font-bold"
                       >
-                        {selectedJob.referenceEmail}
+                        {selectedThesis.referenceEmail}
                       </a>
                     </div>
                   </div>
@@ -280,4 +260,4 @@ const Experience: React.FC<ExperienceProps> = ({ profile = 'backend' }) => {
   );
 };
 
-export default Experience;
+export default Research;
