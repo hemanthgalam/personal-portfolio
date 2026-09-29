@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "predeploy": "npm run build && copy dist\\index.html dist\\404.html",
+    "predeploy": "npm run build && copy dist\\index.html dist\\404.html && if not exist dist\\portfolio mkdir dist\\portfolio && copy dist\\index.html dist\\portfolio\\index.html && if not exist dist\\hemanth mkdir dist\\hemanth && copy dist\\index.html dist\\hemanth\\index.html",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {

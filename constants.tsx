@@ -15,7 +15,7 @@ export const PERSONAL_INFO: PersonalInfo = {
 
 export const WORK_HISTORY: WorkExperience[] = [
   {
-    role: "Senior Backend Engineer",
+    role: "Backend Engineer Part-time",
     company: "SS&C Intralinks (via Ensar Solutions)",
     location: "Remote / Germany",
     period: "May 2023 – Present",
