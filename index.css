@@ -1,7 +1,5 @@
 /* Clean Neural Network & Distributed Systems Design System */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
-
 :root {
   font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
   color-scheme: dark;
@@ -107,4 +105,9 @@ body {
 .packet-amber {
   background: linear-gradient(to bottom, transparent, #fbbf24, transparent);
   animation: neuralPacketFlow 6s linear infinite;
+}
+
+/* Keep anchored sections clear of the fixed header */
+section[id] {
+  scroll-margin-top: 6rem;
 }

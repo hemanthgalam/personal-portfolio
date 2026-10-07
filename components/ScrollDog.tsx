@@ -49,12 +49,14 @@ const ScrollDog: React.FC = () => {
       const docHeight = document.documentElement.scrollHeight;
 
       const sections = [
-        { id: 'experience', name: 'Experience', hop: 2, defaultLat: 12 },
-        { id: 'research', name: 'Research', hop: 3, defaultLat: 5 },
-        { id: 'skills', name: 'Skills', hop: 4, defaultLat: 6 },
-        { id: 'projects', name: 'Projects', hop: 5, defaultLat: 18 },
-        { id: 'education', name: 'Education', hop: 6, defaultLat: 4 },
-        { id: 'references', name: 'References', hop: 7, defaultLat: 8 },
+        { id: 'about', name: 'About', hop: 2, defaultLat: 3 },
+        { id: 'experience', name: 'Experience', hop: 3, defaultLat: 12 },
+        { id: 'projects', name: 'Projects', hop: 4, defaultLat: 18 },
+        { id: 'education', name: 'Education', hop: 5, defaultLat: 4 },
+        { id: 'publication', name: 'Publication', hop: 6, defaultLat: 5 },
+        { id: 'achievements', name: 'Achievements', hop: 7, defaultLat: 6 },
+        { id: 'skills', name: 'Skills', hop: 8, defaultLat: 6 },
+        { id: 'contact', name: 'Contact', hop: 9, defaultLat: 8 },
       ];
 
       let found = false;
@@ -84,7 +86,7 @@ const ScrollDog: React.FC = () => {
       } else if (!found && scrollY + windowHeight >= docHeight - 50) {
         setActiveHop({
           name: "End",
-          hopNumber: 7,
+          hopNumber: 9,
           latency: 5
         });
       }

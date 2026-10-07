@@ -1,281 +1,80 @@
-import React, { useState } from 'react';
-import { WORK_HISTORY, ROBOTICS_WORK_HISTORY } from '../constants';
-import { WorkExperience } from '../types';
-import { trackEvent } from '../utils/telemetry';
-import { Calendar, MapPin, Briefcase, ArrowRight, ExternalLink, FileText, Activity, CheckCircle2, Server, Mail } from 'lucide-react';
-import Modal from './Modal';
-import Slideshow from './Slideshow';
+import React from 'react';
+import { WORK_HISTORY } from '../constants';
+import { Calendar, MapPin, Briefcase, CheckCircle2 } from 'lucide-react';
+import FilterTabs, { AreaFilter, AREA_LABELS } from './FilterTabs';
 
 interface ExperienceProps {
-  profile?: 'backend' | 'robotics';
+  filter: AreaFilter;
+  onFilterChange: (value: AreaFilter) => void;
 }
 
-const Experience: React.FC<ExperienceProps> = ({ profile = 'backend' }) => {
-  const [selectedJob, setSelectedJob] = useState<WorkExperience | null>(null);
-
-  const history = profile === 'robotics' ? ROBOTICS_WORK_HISTORY : WORK_HISTORY;
-
-  const getIframeSrc = (url: string) => {
-    if (url.includes('drive.google.com')) {
-      return url;
-    }
-    return `${url}#toolbar=0&view=Fit`;
-  };
-
-  const hasMedia = (job: WorkExperience) => {
-    return !!(job.videoUrl || job.presentationUrl || (job.slides && job.slides.length > 0));
-  };
+const Experience: React.FC<ExperienceProps> = ({ filter, onFilterChange }) => {
+  const history = filter === 'all' ? WORK_HISTORY : WORK_HISTORY.filter(job => job.areas.includes(filter));
 
   return (
-    <section className="py-24 bg-[#0b0f19] relative border-t border-slate-800/60 neural-grid" id="experience">
-      
-      {/* Route Connector */}
-      <div className="absolute left-1/2 top-0 -translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-sky-500/50 via-slate-800 to-indigo-500/50 pointer-events-none hidden lg:block">
-        <div className="packet-purple"></div>
-      </div>
+    <section className="py-16 sm:py-24 bg-[#0b0f19] relative border-t border-slate-800/60 neural-grid" id="experience">
 
-      <div className="container mx-auto px-6 relative z-10">
-        
+      <div className="container mx-auto px-4 sm:px-6 relative z-10 max-w-5xl">
+
         {/* Section Header */}
-        <div className="mb-16 text-center lg:text-left">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">Professional Experience</h2>
-          <p className="text-slate-400 text-sm font-mono max-w-xl">
-            {profile === 'robotics' 
-              ? 'Applied Robotics Research & Edge AI Engineering Positions' 
-              : 'Distributed Systems & Microservices Engineering Timeline'
-            }
-          </p>
+        <div className="mb-10 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 text-center lg:text-left">
+          <div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">Experience</h2>
+            <p className="text-slate-400 text-sm font-mono max-w-xl">
+              Backend engineering, robotics and ML roles, most recent first.
+            </p>
+          </div>
+          <FilterTabs value={filter} onChange={onFilterChange} label="Filter experience by area" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {history.map((job, idx) => (
-            <div 
-              key={idx} 
-              className="neural-card rounded-2xl p-6 flex flex-col justify-between group"
-            >
-              <div>
-                {/* Header info */}
-                <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-3 text-xs">
+        {/* Timeline */}
+        <ol className="relative border-l border-slate-800 ml-2 sm:ml-3 space-y-8">
+          {history.map(job => (
+            <li key={`${job.company}-${job.period}`} className="pl-6 sm:pl-8 relative">
+              <span className="absolute -left-[7px] top-7 w-3 h-3 rounded-full bg-sky-400 ring-4 ring-[#0b0f19]" aria-hidden="true"></span>
+
+              <article className="neural-card rounded-2xl p-5 sm:p-7">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-3 border-b border-slate-800 pb-3 text-xs">
                   <div className="flex items-center gap-2">
-                    <Briefcase size={15} className="text-sky-400" />
+                    <Briefcase size={15} className="text-sky-400 shrink-0" />
                     <span className="text-white font-semibold text-sm">{job.company}</span>
                   </div>
-                  <span className="text-slate-400 font-mono">{job.location}</span>
-                </div>
-                
-                <h3 className="text-lg font-bold text-white mb-1 group-hover:text-sky-400 transition-colors">
-                  {job.role}
-                </h3>
-                <p className="text-sky-400 font-semibold font-mono text-xs mb-4">{job.period}</p>
-                
-                <p className="text-slate-300 text-sm leading-relaxed mb-4">
-                  {job.summary}
-                </p>
-
-                {job.presentationUrl && (
-                  <div className="mb-4">
-                    <a 
-                      href={job.presentationUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 border border-sky-500/30 rounded-lg text-xs font-mono text-sky-400 hover:bg-sky-500/20 transition-colors"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <FileText size={13} />
-                      <span>Reference / Experience PDF</span>
-                    </a>
-                  </div>
-                )}
-
-                {job.referenceEmail && (
-                  <div className="mb-6 pt-3 border-t border-slate-800/80 flex items-center gap-2 text-xs">
-                    <Mail size={14} className="text-sky-400 shrink-0" />
-                    <span className="text-slate-400">Ref:</span>
-                    <a 
-                      href={`mailto:${job.referenceEmail}`} 
-                      className="text-sky-400 hover:underline font-mono truncate font-medium"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {job.referenceEmail}
-                    </a>
-                  </div>
-                )}
-              </div>
-
-              <button 
-                onClick={() => {
-                  setSelectedJob(job);
-                  trackEvent('view_experience_details', { company: job.company, role: job.role });
-                }}
-                className="w-full mt-auto py-3 px-4 bg-slate-900 border border-slate-700 hover:border-sky-500/50 hover:bg-sky-500/10 text-slate-200 font-medium text-xs rounded-xl flex items-center justify-center gap-2 transition-all"
-              >
-                Inspect Details
-                <ArrowRight size={15} className="text-sky-400 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <Modal 
-        isOpen={!!selectedJob} 
-        onClose={() => setSelectedJob(null)} 
-        title={selectedJob?.role || ''}
-        subtitle={selectedJob ? `${selectedJob.company} // Engineering Log` : undefined}
-      >
-        {selectedJob && (
-          <div className="text-sm space-y-6">
-            
-            {/* Upper Stats */}
-            <div className="flex flex-wrap gap-6 text-xs bg-slate-950/60 border border-slate-800 p-4 rounded-xl font-mono text-slate-300">
-              <div className="flex items-center gap-2">
-                <Calendar size={14} className="text-sky-400" />
-                <span>TENURE: {selectedJob.period}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin size={14} className="text-sky-400" />
-                <span>LOCATION: {selectedJob.location}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Server size={14} className="text-emerald-400" />
-                <span>STATUS: Verified</span>
-              </div>
-            </div>
-
-            {/* Split layout: media on left, text logs on right */}
-            <div className={`grid grid-cols-1 ${hasMedia(selectedJob) ? 'lg:grid-cols-12' : ''} gap-8`}>
-              
-              {/* Media column */}
-              {hasMedia(selectedJob) && (
-                <div className="lg:col-span-7 space-y-4">
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl h-full flex flex-col justify-between">
-                    <div className="flex justify-between items-center mb-4 text-xs font-mono">
-                      <h4 className="font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                        <Activity size={15} className="text-sky-400 animate-pulse" />
-                        Diagnostics & Presentation
-                      </h4>
-                      {selectedJob.presentationUrl && (
-                        <a 
-                          href={selectedJob.presentationUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => trackEvent('click_experience_document', { company: selectedJob.company, document_url: selectedJob.presentationUrl })}
-                          className="flex items-center gap-1.5 text-xs font-bold text-sky-400 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700 hover:border-sky-400 transition-all"
-                        >
-                          <ExternalLink size={12} />
-                          Full View
-                        </a>
-                      )}
-                    </div>
-                    
-                    <div className="flex-1 flex items-center justify-center">
-                      {selectedJob.videoUrl ? (
-                        <div className="w-full h-[40vh] md:h-[48vh] bg-black rounded-lg overflow-hidden border border-slate-800 relative group">
-                          <video 
-                            controls 
-                            className="w-full h-full object-contain"
-                            preload="metadata"
-                          >
-                            <source src={selectedJob.videoUrl} type="video/mp4" />
-                            <source src={selectedJob.videoUrl} type="video/webm" />
-                            Your browser does not support the video tag.
-                          </video>
-                        </div>
-                      ) : selectedJob.presentationUrl ? (
-                        <div className="w-full h-[40vh] md:h-[48vh] bg-slate-900 rounded-lg overflow-hidden border border-slate-800 relative">
-                          <iframe 
-                            src={getIframeSrc(selectedJob.presentationUrl)}
-                            className="w-full h-full relative z-10"
-                            title="Presentation PDF"
-                            allow="autoplay"
-                          >
-                          </iframe>
-                          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-slate-400 z-0">
-                            <FileText size={40} className="mb-3 opacity-40 text-sky-400" />
-                            <p className="mb-2 font-medium">Mounting document stream...</p>
-                            <a 
-                              href={selectedJob.presentationUrl} 
-                              target="_blank" 
-                              rel="noreferrer" 
-                              className="text-sky-400 font-semibold underline hover:text-white"
-                            >
-                              View directly
-                            </a>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="w-full">
-                          <Slideshow slides={selectedJob.slides!} />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Text logs column */}
-              <div className={`${hasMedia(selectedJob) ? 'lg:col-span-5' : 'w-full'} space-y-6`}>
-                
-                {/* Summary */}
-                <div className="bg-slate-950/60 border border-slate-800 p-5 rounded-xl">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2 border-l-2 border-sky-400 pl-2 font-mono">// Core Summary</h4>
-                  <p className="text-slate-200 text-sm leading-relaxed">
-                    {selectedJob.summary}
-                  </p>
-                </div>
-
-                {/* Contributions */}
-                <div className="bg-slate-950/60 border border-slate-800 p-5 rounded-xl">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3 border-l-2 border-sky-400 pl-2 font-mono">// Key Contributions</h4>
-                  <ul className="space-y-3 text-sm">
-                    {selectedJob.description.map((desc, idx) => (
-                      <li key={idx} className="flex gap-3 text-slate-200 leading-relaxed items-start">
-                        <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
-                        <span>{desc}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Tech Stack */}
-                <div className="bg-slate-950/60 border border-slate-800 p-5 rounded-xl">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3 border-l-2 border-sky-400 pl-2 font-mono">// Tech Stack</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedJob.skills.map((skill, idx) => (
-                      <span 
-                        key={idx} 
-                        className="px-3 py-1 bg-slate-900 border border-slate-700 text-slate-200 rounded-lg font-mono text-xs hover:border-sky-400/50 hover:text-white transition-colors"
-                      >
-                        {skill}
+                  <div className="flex flex-wrap gap-1.5">
+                    {job.areas.map(area => (
+                      <span key={area} className="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300 font-mono text-[10px] uppercase tracking-wider">
+                        {AREA_LABELS[area]}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                {/* Reference Contact */}
-                {selectedJob.referenceEmail && (
-                  <div className="bg-slate-950/60 border border-slate-800 p-5 rounded-xl">
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2 border-l-2 border-sky-400 pl-2 font-mono">// Engineering Reference Contact</h4>
-                    <div className="flex items-center gap-2 text-sm text-slate-200">
-                      <Mail size={16} className="text-sky-400 shrink-0" />
-                      <span>Contact:</span>
-                      <a 
-                        href={`mailto:${selectedJob.referenceEmail}`} 
-                        className="text-sky-400 font-mono hover:underline font-bold"
-                      >
-                        {selectedJob.referenceEmail}
-                      </a>
-                    </div>
-                  </div>
-                )}
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-2">{job.role}</h3>
+                <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs font-mono text-slate-400 mb-5">
+                  <span className="flex items-center gap-1.5"><Calendar size={13} className="text-sky-400" />{job.period}</span>
+                  <span className="flex items-center gap-1.5"><MapPin size={13} className="text-sky-400" />{job.location}</span>
+                </div>
 
-              </div>
+                <ul className="space-y-2.5 text-sm mb-5">
+                  {job.description.map((desc, idx) => (
+                    <li key={idx} className="flex gap-3 text-slate-200 leading-relaxed items-start">
+                      <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
+                      <span>{desc}</span>
+                    </li>
+                  ))}
+                </ul>
 
-            </div>
-
-          </div>
-        )}
-      </Modal>
+                <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-800">
+                  {job.skills.map(skill => (
+                    <span key={skill} className="px-2.5 py-1 bg-slate-900 border border-slate-700 text-slate-300 rounded-lg font-mono text-xs">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            </li>
+          ))}
+        </ol>
+      </div>
     </section>
   );
 };
