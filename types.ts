@@ -1,16 +1,14 @@
+// Focus areas used by the Experience/Projects filter
+export type Area = 'backend' | 'robotics' | 'ml';
 
 export interface WorkExperience {
   role: string;
   company: string;
   location: string;
   period: string;
-  summary: string;
+  areas: Area[];
   description: string[];
   skills: string[];
-  slides?: string[];
-  presentationUrl?: string; // Link to the full PDF/PPT download
-  videoUrl?: string; // Link to video presentation
-  referenceEmail?: string;
 }
 
 export interface Education {
@@ -18,16 +16,18 @@ export interface Education {
   institution: string;
   period: string;
   details?: string[];
+  note?: string;
 }
 
 export interface Project {
   name: string;
+  subtitle: string;
   description: string;
+  details?: string[];
   tags: string[];
-  link?: string;
-  slides?: string[];
-  presentationUrl?: string;
-  videoUrl?: string;
+  areas: Area[];
+  link: string;
+  linkLabel: string;
 }
 
 export interface SkillCategory {
@@ -39,25 +39,27 @@ export interface Achievement {
   title: string;
   event: string;
   location: string;
+  description: string;
+}
+
+export interface Publication {
+  authors: string;
+  title: string;
+  venue: string;
+  doi: string;
+  url: string;
 }
 
 export interface PersonalInfo {
   name: string;
-  title: string;
+  tagline: string;
   location: string;
   email: string;
-  phone: string;
-  github?: string;
-  linkedin?: string;
-  meetingUrl?: string;
+  github: string;
+  githubLabel: string;
+  linkedin: string;
+  linkedinLabel: string;
   languages: string[];
+  bio: string;
   primarySkills: string[];
-}
-
-export interface Reference {
-  name: string;
-  role: string;
-  company: string;
-  relation: string;
-  contact: string;
 }

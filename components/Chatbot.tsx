@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Terminal, Send, X, ShieldAlert, Cpu, TerminalSquare, Sparkles, Mail } from 'lucide-react';
-import { GoogleGenAI } from '@google/genai';
-import { PERSONAL_INFO, WORK_HISTORY, EDUCATION, PROJECTS, FREELANCE_PROJECTS, SKILL_CATEGORIES, ACHIEVEMENTS } from '../constants';
+import { PERSONAL_INFO, WORK_HISTORY, EDUCATION, PROJECTS, PUBLICATIONS, SKILL_CATEGORIES, ACHIEVEMENTS } from '../constants';
 import { trackEvent } from '../utils/telemetry';
 
 interface Message {
@@ -83,25 +82,26 @@ const Chatbot: React.FC = () => {
 
     try {
       trackEvent('chatbot_query');
+      // Loaded on first query so the SDK stays out of the initial page bundle
+      const { GoogleGenAI } = await import('@google/genai');
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
       const systemContext = `
         You are Hemanth's AI Assistant on his personal portfolio website. 
-        He is a Senior Software Engineer with 5+ years of experience in distributed systems, microservices, and high-performance databases.
-        
-        Answer questions about Hemanth's background, projects, and systems engineering experience based strictly on this dataset:
+        Answer questions about Hemanth's background, experience, projects and education based strictly on this dataset.
+        Use UK English. Do not add titles, metrics, employers or skills that are not in the dataset.
         Personal Info: ${JSON.stringify(PERSONAL_INFO)}
         Work History: ${JSON.stringify(WORK_HISTORY)}
         Education: ${JSON.stringify(EDUCATION)}
         Skills: ${JSON.stringify(SKILL_CATEGORIES)}
-        Featured Projects: ${JSON.stringify(PROJECTS)}
-        Freelance Projects: ${JSON.stringify(FREELANCE_PROJECTS)}
+        Projects: ${JSON.stringify(PROJECTS)}
+        Publications: ${JSON.stringify(PUBLICATIONS)}
         Achievements: ${JSON.stringify(ACHIEVEMENTS)}
  
         Guidelines:
         1. Maintain a high-tech, professional, slightly system-operator-like tone.
         2. Keep replies structured and clear. Limit responses to 100 words.
-        3. Highlight his distributed systems capabilities, Node.js proficiency, and clean-code engineering logic when appropriate.
+        3. Cover backend, robotics and ML work as relevant to the question.
         4. If a question goes outside this dataset, respond with: "I do not have that information in my current records."
       `;
 

@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Phone, Github, Linkedin, ChevronDown, Cpu, Terminal, ArrowRight, Play, Server, Database, Share2, Activity, Network, FileText, Bot } from 'lucide-react';
-import { PERSONAL_INFO, ROBOTICS_PERSONAL_INFO } from '../constants';
+import { Mail, Github, Linkedin, ChevronDown, Cpu, ArrowRight, Server, Bot, Network } from 'lucide-react';
+import { PERSONAL_INFO } from '../constants';
 import { trackEvent } from '../utils/telemetry';
 
-interface HeroProps {
-  profile?: 'backend' | 'robotics';
-}
-
-const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
+const Hero: React.FC = () => {
   const [sessionTime, setSessionTime] = useState(0);
   const [activeConsoleTab, setActiveConsoleTab] = useState<'endpoints' | 'metrics' | 'env'>('endpoints');
 
-  const currentInfo = profile === 'robotics' ? ROBOTICS_PERSONAL_INFO : PERSONAL_INFO;
+  const currentInfo = PERSONAL_INFO;
 
   // Simulate active session timer
   useEffect(() => {
@@ -28,13 +24,13 @@ const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
   };
 
   return (
-    <section className="relative bg-[#0b0f19] pt-32 pb-20 overflow-hidden min-h-[90vh] flex flex-col justify-center neural-grid" id="ingress">
+    <section className="relative bg-[#0b0f19] pt-28 sm:pt-32 pb-24 overflow-hidden min-h-[90vh] flex flex-col justify-center neural-grid">
       
       {/* Background Decorative Neural Aura */}
       <div className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full bg-sky-500/10 blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 left-1/4 w-96 h-96 rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none"></div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Left Column: Intro */}
@@ -42,7 +38,7 @@ const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
             
             <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 bg-sky-500/10 border border-sky-500/30 rounded-full text-sky-400 text-xs font-semibold mb-6">
               <span className="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span>
-              NEURAL NODE ACTIVE :: STUTTGART, GERMANY
+              STUTTGART, GERMANY
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 leading-tight text-white">
@@ -52,31 +48,24 @@ const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
               </span>
             </h1>
             
-            <h2 className="text-xl md:text-2xl text-slate-200 font-medium mb-6 flex items-center justify-center md:justify-start gap-2.5">
-              {profile === 'robotics' ? <Bot className="text-amber-400" size={24} /> : <Network className="text-sky-400" size={24} />}
-              {currentInfo.title}
+            <h2 className="text-xl md:text-2xl text-slate-200 font-medium mb-8 flex items-center justify-center md:justify-start gap-2.5">
+              <Network className="text-sky-400 shrink-0 hidden sm:block" size={24} />
+              {currentInfo.tagline}
             </h2>
-
-            <p className="text-slate-300 text-base md:text-lg mb-8 max-w-2xl leading-relaxed">
-              {profile === 'robotics' 
-                ? "Robotics Software Engineer combining 5+ years of robust backend distributed systems experience with 2+ years of applied robotics research. Specializes in ROS2, Sim2Real workflows (NVIDIA Isaac Sim), and optimizing edge AI inference (TensorRT) for Human-Robot Collaboration."
-                : "Senior Software Engineer specializing in scalable backend architectures, high-concurrency microservices, and real-time computer vision inference pipelines. Expert in leveraging state-of-the-art AI tools (Claude & Codex) for accelerated feature engineering, high quality code, and efficient software delivery."
-              }
-            </p>
 
             {/* Quick Metrics */}
             <div className="grid grid-cols-3 gap-4 mb-8 bg-slate-900/80 border border-slate-800 rounded-xl p-4 text-slate-300 max-w-lg mx-auto md:mx-0">
               <div className="text-center md:text-left border-r border-slate-800 pr-2">
                 <span className="block text-slate-400 text-xs uppercase tracking-wider mb-1 font-mono">Session</span>
-                <span className="text-white text-base font-bold font-mono">{formatSessionTime(sessionTime)}</span>
+                <span className="text-white text-sm sm:text-base font-bold font-mono">{formatSessionTime(sessionTime)}</span>
               </div>
               <div className="text-center md:text-left border-r border-slate-800 px-2">
                 <span className="block text-slate-400 text-xs uppercase tracking-wider mb-1 font-mono">Experience</span>
-                <span className="text-emerald-400 text-base font-bold font-mono">5+ Years</span>
+                <span className="text-emerald-400 text-sm sm:text-base font-bold font-mono">5+ Years</span>
               </div>
               <div className="text-center md:text-left pl-2">
                 <span className="block text-slate-400 text-xs uppercase tracking-wider mb-1 font-mono">Focus</span>
-                <span className="text-sky-400 text-base font-bold font-mono">{profile === 'robotics' ? 'ROS2 & AI' : 'Backend'}</span>
+                <span className="block text-sky-400 text-xs sm:text-sm font-bold font-mono leading-snug">Backend<br />Robotics<br />ML</span>
               </div>
             </div>
 
@@ -90,16 +79,35 @@ const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
               ))}
             </div>
 
-            {/* Contact details & Download PDF button */}
-            <div className="flex flex-col sm:flex-row flex-wrap gap-6 mb-8 text-slate-300 text-sm justify-center md:justify-start items-center">
-              <a 
-                href={`mailto:${currentInfo.email}`} 
-                onClick={() => trackEvent('click_email', { context: 'ingress_details' })}
-                className="flex items-center gap-2 hover:text-sky-400 transition-colors justify-center md:justify-start group"
+            {/* Contact links */}
+            <div className="flex flex-wrap gap-3 mb-8 text-sm justify-center md:justify-start">
+              <a
+                href={`mailto:${currentInfo.email}`}
+                onClick={() => trackEvent('click_email', { context: 'hero' })}
+                className="flex items-center gap-2 px-4 py-2.5 bg-sky-500/15 border border-sky-500/40 text-white rounded-xl hover:bg-sky-500/25 transition-colors"
               >
                 <Mail size={16} className="text-sky-400" />
-                <span className="text-slate-400">Email:</span>
-                <span className="text-white font-medium group-hover:underline">{currentInfo.email}</span>
+                <span className="font-medium">Email me</span>
+              </a>
+              <a
+                href={currentInfo.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent('click_github', { context: 'hero' })}
+                className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 border border-slate-700 text-slate-200 rounded-xl hover:border-sky-500/50 hover:text-white transition-colors"
+              >
+                <Github size={16} className="text-sky-400" />
+                <span className="font-medium">GitHub</span>
+              </a>
+              <a
+                href={currentInfo.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent('click_linkedin', { context: 'hero' })}
+                className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 border border-slate-700 text-slate-200 rounded-xl hover:border-sky-500/50 hover:text-white transition-colors"
+              >
+                <Linkedin size={16} className="text-sky-400" />
+                <span className="font-medium">LinkedIn</span>
               </a>
             </div>
           </div>
@@ -152,7 +160,7 @@ const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
                       <a 
                         href={PERSONAL_INFO.linkedin}
                         target="_blank" 
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         onClick={() => trackEvent('click_linkedin', { context: 'console_tab' })}
                         className="flex items-center justify-between p-3 bg-slate-950/60 border border-slate-800 hover:border-sky-500/50 hover:bg-sky-500/10 transition-all rounded-xl group"
                       >
@@ -167,7 +175,7 @@ const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
                       <a 
                         href={PERSONAL_INFO.github}
                         target="_blank" 
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         onClick={() => trackEvent('click_github', { context: 'console_tab' })}
                         className="flex items-center justify-between p-3 bg-slate-950/60 border border-slate-800 hover:border-sky-500/50 hover:bg-sky-500/10 transition-all rounded-xl group"
                       >
@@ -178,21 +186,17 @@ const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
                         <ArrowRight size={14} className="text-slate-400 group-hover:translate-x-1 transition-transform" />
                       </a>
                     )}
-                    {PERSONAL_INFO.meetingUrl && (
-                      <a 
-                        href={PERSONAL_INFO.meetingUrl}
-                        target="_blank" 
-                        rel="noreferrer"
-                        onClick={() => trackEvent('click_schedule_call', { context: 'console_tab' })}
-                        className="flex items-center justify-between p-3 bg-slate-950/60 border border-slate-800 hover:border-emerald-500/50 hover:bg-emerald-500/10 transition-all rounded-xl group"
-                      >
-                        <div className="flex items-center gap-3">
-                          <Play size={16} className="text-emerald-400" />
-                          <span className="text-white font-medium text-sm font-sans">Schedule a Call</span>
-                        </div>
-                        <ArrowRight size={14} className="text-slate-400 group-hover:translate-x-1 transition-transform" />
-                      </a>
-                    )}
+                    <a
+                      href={`mailto:${PERSONAL_INFO.email}`}
+                      onClick={() => trackEvent('click_email', { context: 'console_tab' })}
+                      className="flex items-center justify-between p-3 bg-slate-950/60 border border-slate-800 hover:border-emerald-500/50 hover:bg-emerald-500/10 transition-all rounded-xl group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Mail size={16} className="text-emerald-400" />
+                        <span className="text-white font-medium text-sm font-sans">Email</span>
+                      </div>
+                      <ArrowRight size={14} className="text-slate-400 group-hover:translate-x-1 transition-transform" />
+                    </a>
                   </div>
                 )}
 
@@ -203,7 +207,7 @@ const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
                       <div className="flex justify-center">
                         <div className="flex items-center gap-1.5 px-2.5 py-1 bg-sky-500/10 border border-sky-500/40 rounded-lg text-xs text-sky-400 font-bold">
                           <Server size={12} />
-                          <span>Core Infrastructure</span>
+                          <span>Design to delivery</span>
                         </div>
                       </div>
                       
@@ -220,20 +224,20 @@ const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
 
                       <div className="flex justify-between items-end">
                         <div className="flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/40 rounded text-[10px] text-emerald-400">
-                          <Cpu size={10} />
-                          <span>Experience</span>
+                          <Server size={10} />
+                          <span>Backend</span>
                         </div>
                         <div className="flex items-center gap-1 px-2 py-0.5 bg-amber-500/10 border border-amber-500/40 rounded text-[10px] text-amber-400">
-                          <Share2 size={10} />
-                          <span>Research</span>
+                          <Bot size={10} />
+                          <span>Robotics</span>
                         </div>
                         <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-500/10 border border-indigo-500/40 rounded text-[10px] text-indigo-400">
-                          <Database size={10} />
-                          <span>Projects</span>
+                          <Cpu size={10} />
+                          <span>ML</span>
                         </div>
                       </div>
                     </div>
-                    <span className="text-xs text-slate-400">// Visual Neural Hop Topology</span>
+                    <span className="text-xs text-slate-400">// Focus areas</span>
                   </div>
                 )}
 
@@ -241,19 +245,19 @@ const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
                 {activeConsoleTab === 'env' && (
                   <div className="space-y-2.5 text-slate-300 text-xs font-mono">
                     <div>
-                      <span className="text-indigo-400">ROLE</span> = <span className="text-sky-300 font-bold">"Senior Software Engineer"</span>
+                      <span className="text-indigo-400">EXPERIENCE</span> = <span className="text-sky-300 font-bold">"5+ years"</span>
                     </div>
                     <div>
-                      <span className="text-indigo-400">EXPERIENCE</span> = <span className="text-sky-300 font-bold">"5+ Years"</span>
+                      <span className="text-indigo-400">LOCATION</span> = <span className="text-sky-300 font-bold">"{PERSONAL_INFO.location}"</span>
                     </div>
                     <div>
-                      <span className="text-indigo-400">LOCATION</span> = <span className="text-sky-300 font-bold">"Stuttgart, Germany"</span>
+                      <span className="text-indigo-400">LANGUAGES</span> = <span className="text-sky-300 font-bold">"English C1, German A2"</span>
                     </div>
                     <div>
-                      <span className="text-indigo-400">STACK</span> = <span className="text-sky-300 font-bold">"Node.js, TypeScript, Python, AWS"</span>
+                      <span className="text-indigo-400">STACK</span> = <span className="text-sky-300 font-bold">"Node.js/TypeScript, Python, ROS 2"</span>
                     </div>
                     <div className="pt-3 text-slate-400 font-sans leading-relaxed border-t border-slate-800">
-                      High-throughput event-driven microservices, AI inference pipelines & robust API engineering.
+                      {PERSONAL_INFO.tagline}.
                     </div>
                   </div>
                 )}
@@ -265,7 +269,7 @@ const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
       </div>
       
       {/* Down scroll button */}
-      <a href="#experience" className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sky-400 hover:text-white transition-colors cursor-pointer flex flex-col items-center gap-1 font-mono text-xs">
+      <a href="#about" aria-label="Scroll to About" className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sky-400 hover:text-white transition-colors cursor-pointer flex flex-col items-center gap-1 font-mono text-xs">
         <span className="tracking-widest uppercase text-[10px]">Explore</span>
         <ChevronDown size={20} className="animate-bounce" />
       </a>
