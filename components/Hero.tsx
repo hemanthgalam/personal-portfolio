@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Mail, Phone, Github, Linkedin, ChevronDown, Cpu, Terminal, ArrowRight, Play, Server, Database, Share2, Activity, Network, FileText, Bot } from 'lucide-react';
 import { PERSONAL_INFO, ROBOTICS_PERSONAL_INFO } from '../constants';
 import { trackEvent } from '../utils/telemetry';
@@ -9,9 +9,22 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
   const [sessionTime, setSessionTime] = useState(0);
+  const [copyStatus, setCopyStatus] = useState('Copy email');
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [activeConsoleTab, setActiveConsoleTab] = useState<'endpoints' | 'metrics' | 'env'>('endpoints');
 
   const currentInfo = profile === 'robotics' ? ROBOTICS_PERSONAL_INFO : PERSONAL_INFO;
+  useEffect(() => () => { if (copyTimer.current) clearTimeout(copyTimer.current); }, []);
+  const copyEmail = async () => {
+    if (copyTimer.current) clearTimeout(copyTimer.current);
+    try {
+      await navigator.clipboard.writeText(currentInfo.email);
+      setCopyStatus('Copied!');
+    } catch {
+      setCopyStatus('Copy unavailable — use email link');
+    }
+    copyTimer.current = setTimeout(() => setCopyStatus('Copy email'), 3500);
+  };
 
   // Simulate active session timer
   useEffect(() => {
@@ -101,12 +114,13 @@ const Hero: React.FC<HeroProps> = ({ profile = 'backend' }) => {
                 <span className="text-slate-400">Email:</span>
                 <span className="text-white font-medium group-hover:underline">{currentInfo.email}</span>
               </a>
+              <button className="copy-email" type="button" aria-label="Copy email address" onClick={copyEmail}><span role="status">{copyStatus}</span></button>
             </div>
           </div>
 
           {/* Right Column: Console Dashboard */}
           <div className="lg:col-span-5 flex justify-center lg:justify-end">
-            <div className="w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden relative font-mono text-xs">
+            <div className="interactive-console w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden relative font-mono text-xs">
               
               {/* Header */}
               <div className="bg-slate-800/60 px-4 py-3 flex justify-between items-center border-b border-slate-800">

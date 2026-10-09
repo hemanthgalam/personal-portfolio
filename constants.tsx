@@ -154,6 +154,18 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
 
 export const PROJECTS: Project[] = [
   {
+    name: "ProxiHuman — Local-First 3D Motion Studio",
+    description: "A local-first anatomical character and motion studio for industrial and human-robot-collaboration (HRC) contexts — runs entirely in the browser with zero cloud dependencies, no account, and no installation.",
+    link: "https://proxihuman.proxihuman.workers.dev",
+    tags: ["C99", "WebAssembly (Wasm)", "Zig", "WebGL", "JavaScript", "OpenUSD", "Python", "Cloudflare Workers"],
+    details: [
+      "Procedural Motion Engine: Features 41 procedural motion clips ranging from warehouse operations (push cart, bin pick, shelf place, pallet stack) to Human-Robot-Collaboration gestures (handoff, signal, robot acknowledge, guide robot).",
+      "Anatomical Body & Dexterous Hands: Continuous male/female meshes with a 27-joint skeleton and 5 individually posable fingers per hand, offering precision pinch, tripod grasp, twist grip, and bounded IK two-handed spacing.",
+      "Dual Deployment Architecture: Same unmodified C99 simulation core compiles to a 2.2 MB Wasm binary and a native executable, validated with 246+ native/Wasm parity checks and zero heap allocation (fixed 6 MiB footprint).",
+      "Standards-Based OpenUSD Export: Supports UsdSkel (geometry, skeleton, skinning weights checked against OpenUSD toolchain) and JSON joint-dataset export at configurable frame rates."
+    ]
+  },
+  {
     name: "Migrator ETL Tool",
     description: "Architected a scalable ETL tool for high-integrity, seamless data migration between SQL (PostgreSQL) and NoSQL (MongoDB) systems.",
     tags: ["SQL", "NoSQL", "PostgreSQL", "MongoDB", "ETL", "Node.js"]
@@ -339,6 +351,18 @@ export const ROBOTICS_SKILL_CATEGORIES: SkillCategory[] = [
 ];
 
 export const ROBOTICS_PROJECTS: Project[] = [
+  {
+    name: "ProxiHuman — Local-First 3D Motion Studio",
+    description: "A local-first anatomical character and motion studio for industrial and human-robot-collaboration (HRC) contexts — runs entirely in the browser with zero cloud dependencies, no account, and no installation.",
+    link: "https://proxihuman.proxihuman.workers.dev",
+    tags: ["C99", "WebAssembly (Wasm)", "Zig", "WebGL", "JavaScript", "OpenUSD", "Python", "Cloudflare Workers"],
+    details: [
+      "Procedural Motion Engine: Features 41 procedural motion clips ranging from warehouse operations (push cart, bin pick, shelf place, pallet stack) to Human-Robot-Collaboration gestures (handoff, signal, robot acknowledge, guide robot).",
+      "Anatomical Body & Dexterous Hands: Continuous male/female meshes with a 27-joint skeleton and 5 individually posable fingers per hand, offering precision pinch, tripod grasp, twist grip, and bounded IK two-handed spacing.",
+      "Dual Deployment Architecture: Same unmodified C99 simulation core compiles to a 2.2 MB Wasm binary and a native executable, validated with 246+ native/Wasm parity checks and zero heap allocation (fixed 6 MiB footprint).",
+      "Standards-Based OpenUSD Export: Supports UsdSkel (geometry, skeleton, skinning weights checked against OpenUSD toolchain) and JSON joint-dataset export at configurable frame rates."
+    ]
+  },
   {
     name: "Sim2Real HRC Perception Pipeline (ROS2 & Isaac Sim)",
     description: "Built an end-to-end synthetic data generation pipeline in NVIDIA Isaac Sim, training GCNs & Transformers for real-time edge action recognition on Jetson Orin hardware.",

@@ -12,8 +12,15 @@ interface ProjectsProps {
 
 const Projects: React.FC<ProjectsProps> = ({ profile = 'backend' }) => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [query, setQuery] = useState('');
+  const [technology, setTechnology] = useState('all');
 
   const projectList = profile === 'robotics' ? ROBOTICS_PROJECTS : PROJECTS;
+  const technologies = [...new Set(projectList.flatMap(project => project.tags))].sort();
+  const visibleProjects = projectList.filter(project =>
+    (technology === 'all' || project.tags.includes(technology)) &&
+    `${project.name} ${project.description} ${project.tags.join(' ')}`.toLowerCase().includes(query.trim().toLowerCase())
+  );
 
   const getIframeSrc = (url: string) => {
     if (url.includes('drive.google.com')) {
@@ -29,7 +36,7 @@ const Projects: React.FC<ProjectsProps> = ({ profile = 'backend' }) => {
   const renderProjectCard = (project: Project, idx: number) => {
     return (
       <button 
-        key={idx} 
+        key={project.name}
         onClick={() => {
           setSelectedProject(project);
           trackEvent('view_project_details', { project_name: project.name });
@@ -93,9 +100,16 @@ const Projects: React.FC<ProjectsProps> = ({ profile = 'backend' }) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {projectList.map(renderProjectCard)}
+              <div className="project-filters">
+                <label>Search projects<input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Try AI, migration, or Python…"/></label>
+                <label>Technology<select value={technology} onChange={event => setTechnology(event.target.value)}><option value="all">All technologies</option>{technologies.map(tag => <option key={tag} value={tag}>{tag}</option>)}</select></label>
+                {(query || technology !== 'all') && <button type="button" onClick={() => { setQuery(''); setTechnology('all'); }}>Clear filters</button>}
               </div>
+              <p className="project-results" role="status">Showing {visibleProjects.length} of {projectList.length} projects</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {visibleProjects.map(project => renderProjectCard(project, projectList.indexOf(project)))}
+              </div>
+              {visibleProjects.length === 0 && <div className="project-empty">No projects match your filters. Try another keyword or clear the filters.</div>}
             </div>
           </div>
 
@@ -143,11 +157,39 @@ const Projects: React.FC<ProjectsProps> = ({ profile = 'backend' }) => {
             
             {/* Overview */}
             <div className="bg-slate-950/60 border border-slate-800 p-5 rounded-xl">
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2 border-l-2 border-sky-400 pl-2 font-mono">// Overview</h4>
+              <div className="flex justify-between items-center mb-2">
+                <h4 className="text-xs font-bold text-white uppercase tracking-wider border-l-2 border-sky-400 pl-2 font-mono">// Overview</h4>
+                {selectedProject.link && (
+                  <a 
+                    href={selectedProject.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-lg hover:bg-emerald-500/20 transition-all"
+                  >
+                    <ExternalLink size={12} />
+                    Live Web Demo
+                  </a>
+                )}
+              </div>
               <p className="text-slate-200 text-sm leading-relaxed">
                 {selectedProject.description}
               </p>
             </div>
+
+            {/* Key Engineering Details */}
+            {selectedProject.details && selectedProject.details.length > 0 && (
+              <div className="bg-slate-950/60 border border-slate-800 p-5 rounded-xl space-y-2">
+                <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3 border-l-2 border-amber-400 pl-2 font-mono">// Engineering Highlights & Features</h4>
+                <ul className="space-y-2 text-slate-300 text-xs leading-relaxed">
+                  {selectedProject.details.map((detail, dIdx) => (
+                    <li key={dIdx} className="flex items-start gap-2">
+                      <span className="text-amber-400 font-bold font-mono mt-0.5">•</span>
+                      <span>{detail}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* Tags */}
             <div className="bg-slate-950/60 border border-slate-800 p-5 rounded-xl">

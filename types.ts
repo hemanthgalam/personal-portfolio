@@ -25,6 +25,7 @@ export interface Project {
   description: string;
   tags: string[];
   link?: string;
+  details?: string[];
   slides?: string[];
   presentationUrl?: string;
   videoUrl?: string;

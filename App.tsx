@@ -8,9 +8,12 @@ import Education from './components/Education';
 import References from './components/References';
 import Chatbot from './components/Chatbot';
 import ScrollDog from './components/ScrollDog'; // Rethemed as NetworkPing
+import InteractiveNavigation from './components/InteractiveNavigation';
+import useCardInteraction from './utils/useCardInteraction';
 import { Moon, Sun, Server, Cpu, Bot, Code2 } from 'lucide-react';
 
 function App() {
+  useCardInteraction();
   const [isDark, setIsDark] = useState(true);
   const [profile, setProfile] = useState<'backend' | 'robotics'>('backend');
 
@@ -60,15 +63,7 @@ function App() {
         </div>
         
         {/* Navigation links */}
-        <nav className="hidden lg:flex gap-6 text-slate-300 font-sans font-medium text-xs">
-          <a href="#ingress" className="hover:text-sky-400 transition-colors">Welcome</a>
-          <a href="#experience" className="hover:text-sky-400 transition-colors">Experience</a>
-          <a href="#research" className="hover:text-sky-400 transition-colors">Research</a>
-          <a href="#skills" className="hover:text-sky-400 transition-colors">Skills</a>
-          <a href="#projects" className="hover:text-sky-400 transition-colors">Projects</a>
-          <a href="#education" className="hover:text-sky-400 transition-colors">Education</a>
-          <a href="#references" className="hover:text-sky-400 transition-colors">References</a>
-        </nav>
+        <InteractiveNavigation />
 
         <div className="flex items-center gap-2.5">
           {/* Status Indicator */}
@@ -89,7 +84,7 @@ function App() {
       </header>
 
       {/* Main Cluster Ingress */}
-      <div id="ingress">
+      <div>
         <Hero profile={profile} />
       </div>
 
